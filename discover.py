@@ -10,9 +10,11 @@ class DeviceDiscoverer:
             self.credentials = json.load(f)['credentials']
 
     def start_discover(self) -> ONVIFClient:
+        print("Discovering ONVIF devices...")
         while True:
             discovery = ONVIFDiscovery(timeout=5)
             devices = discovery.discover()
+            print("Could not find any devices. Trying again...")
 
             if len(devices) > 0:
                 break
