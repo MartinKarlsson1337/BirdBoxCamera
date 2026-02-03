@@ -1,0 +1,3 @@
+onvif-python
+opencv-python
+flask
