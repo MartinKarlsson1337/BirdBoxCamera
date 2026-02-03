@@ -13,7 +13,7 @@ class DeviceDiscoverer:
     def connect_directly(self, ip: str, port: int):
         client = ONVIFClient(
             host=ip,
-            port=port
+            port=port,
             username=self.credentials["username"],
             password=self.credentials["password"]
         )
