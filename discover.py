@@ -12,7 +12,7 @@ class DeviceDiscoverer:
     def start_discover(self) -> ONVIFClient:
         print("Discovering ONVIF devices...")
         while True:
-            discovery = ONVIFDiscovery(timeout=5, interface="eth0")
+            discovery = ONVIFDiscovery(timeout=5)
             print(f"Discovering devices on {discovery.interface}")
             devices = discovery.discover()
             print("Could not find any devices. Trying again...")
