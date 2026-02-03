@@ -2,6 +2,7 @@ import json
 from os import PathLike
 from onvif import ONVIFDiscovery
 from onvif import ONVIFClient
+import subprocess
 
 class DeviceDiscoverer:
     def __init__(self, credentials_path: str|PathLike):
@@ -10,9 +11,12 @@ class DeviceDiscoverer:
             self.credentials = json.load(f)['credentials']
 
     def start_discover(self) -> ONVIFClient:
+        print("Turning of Wi-Fi temporarily")
+        subprocess.run(["sudo", "ip", "link", "set", "wlan0", "down"], check=True)
+
         print("Discovering ONVIF devices...")
         while True:
-            discovery = ONVIFDiscovery(timeout=5)
+            discovery = ONVIFDiscovery(timeout=5, interface="eth0")
             print(f"Discovering devices on {discovery.interface}")
             devices = discovery.discover()
             print("Could not find any devices. Trying again...")
@@ -34,5 +38,7 @@ class DeviceDiscoverer:
             username=self.credentials['username'],
             password=self.credentials['password']
         )
+
+        subprocess.run(["sudo", "ip", "link", "set", "wlan0", "up"], check=True)
 
         return client
