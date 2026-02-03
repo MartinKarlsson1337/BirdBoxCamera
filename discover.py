@@ -10,10 +10,16 @@ class DeviceDiscoverer:
         with open(credentials_path, "r") as f:
             self.credentials = json.load(f)['credentials']
 
-    def start_discover(self) -> ONVIFClient:
-        print("Turning of Wi-Fi temporarily")
-        subprocess.run(["sudo", "ip", "link", "set", "wlan0", "down"], check=True)
+    def connect_directly(self, ip: str, port: int):
+        client = ONVIFClient(
+            host=ip,
+            port=port
+            username=self.credentials["username"],
+            password=self.credentials["password"]
+        )
+        return client
 
+    def start_discover(self) -> ONVIFClient:
         print("Discovering ONVIF devices...")
         while True:
             discovery = ONVIFDiscovery(timeout=5, interface="eth0")
@@ -38,7 +44,5 @@ class DeviceDiscoverer:
             username=self.credentials['username'],
             password=self.credentials['password']
         )
-
-        subprocess.run(["sudo", "ip", "link", "set", "wlan0", "up"], check=True)
 
         return client

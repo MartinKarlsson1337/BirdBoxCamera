@@ -7,7 +7,8 @@ class CameraManager:
     def __init__(self):
         # Discover ONVIF devices
         discoverer = DeviceDiscoverer("secrets.json")
-        self.client: ONVIFClient = discoverer.start_discover()
+        #self.client: ONVIFClient = discoverer.start_discover()
+        self.client: ONVIFClient = discoverer.connect_directly("192.168.1.43", 80)
         self.media = self.client.media()
         self.media2 = self.client.media2()
 
