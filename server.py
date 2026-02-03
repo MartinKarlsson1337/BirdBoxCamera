@@ -1,6 +1,5 @@
 from flask import Flask, render_template, Response
 from camera_manager import CameraManager
-import cv2
 
 app = Flask(__name__)
 
@@ -16,4 +15,4 @@ def video():
 
 
 if __name__ == '__main__':
-    app.run(threaded=True)
+    app.run(threaded=True, host="0.0.0.0", port=5000)
