@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 
 class PipelineComponent(threading.Thread, ABC):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.input_buffer = None
         self.output_buffer = None
         self.should_stop = False
