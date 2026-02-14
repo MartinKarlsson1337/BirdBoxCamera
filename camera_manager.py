@@ -15,18 +15,12 @@ class CameraManager:
         # Remove On screen displays (Camera has timestamp by default)
         self._clear_osds()
 
-        # Find video stream
-        stream_uri = self._get_stream()
-
-        # Start streaming
-        self.streamer = RTSPStreamer(stream_uri["Uri"])
-
     def _clear_osds(self):
         osds = self.media2.GetOSDs()
         for osd in osds:
             self.media2.DeleteOSD(osd.token)
 
-    def _get_stream(self):
+    def get_stream(self):
         profiles = self.media.GetProfiles()
         main_stream = None
         for profile in profiles:
