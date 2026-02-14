@@ -1,7 +1,10 @@
 from flask import Flask, render_template, Response
 from camera_manager import CameraManager
 from streaming import Pipeline, RTSPStreamer, FrameEncoder
+import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='server.log', encoding='utf-8', level=logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -16,10 +19,10 @@ output_buffer = pipeline.get_final_output_buffer()
 
 def frame_getter():
     while True:
-        print("Frame getter: Waiting for next frame...")
+        logger.info("Frame getter: Waiting for next frame...")
         output = output_buffer.get()
-        print("Frame getter: Got next frame. Yielding...")
-        yield output_buffer.get()
+        logger.info("Frame getter: Got next frame. Yielding...")
+        yield output
 
 
 @app.route('/')
@@ -32,4 +35,5 @@ def video():
 
 
 if __name__ == '__main__':
+    pipeline.start_pipeline()
     app.run(threaded=True, host="0.0.0.0", port=5000)

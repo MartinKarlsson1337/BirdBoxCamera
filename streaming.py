@@ -3,6 +3,9 @@ import threading
 import queue
 from typing import List
 from abc import ABC, abstractmethod
+import logging
+
+logger = logging.getLogger(__name__)
 
 class PipelineComponent(threading.Thread, ABC):
     def __init__(self):
@@ -22,7 +25,7 @@ class PipelineComponent(threading.Thread, ABC):
 
     @abstractmethod
     def component_function(self):
-        print("Run has not been implemented")
+        raise Exception("component_function has not been implemented")
 
     def run(self):
         while self.should_stop:
@@ -69,11 +72,11 @@ class FrameEncoder(PipelineComponent):
 
     def component_function(self):
         frame = self.input_buffer.get()
-        print("Encoder: Got next frame to encode")
+        logger.info("Encoder: Got next frame to encode")
         imgencode = cv2.imencode('.jpg', frame)[1]
         stringData = imgencode.tobytes()
         output = (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
-        print("Encoder: Finished encoding. Enqueueing frame")
+        logger.info("Encoder: Finished encoding. Enqueueing frame")
         self.output_buffer.put(output)
 
 
@@ -81,9 +84,9 @@ class RTSPStreamer(PipelineComponent):
     def __init__(self, stream_url: str):
         super().__init__()
         self.rtsp_url = stream_url
-        print("RTSP client: Starting streaming")
+        logger.info("RTSP client: Starting streaming")
         self.capture = cv2.VideoCapture(self.rtsp_url)
-        print("RTSP client: Stream started")
+        logger.info("RTSP client: Stream started")
 
     def stop_running(self):
         self.capture.release()
@@ -91,12 +94,12 @@ class RTSPStreamer(PipelineComponent):
 
     def component_function(self):
         if not self.capture.isOpened():
-            print("Error: Cannot open the RTSP stream.")
+            logger.info("Error: Cannot open the RTSP stream.")
             exit()
 
             ret, frame = capture.read()
             if not ret:
-                print("Error: Cannot grab frame from RTSP stream.")
+                logger.info("Error: Cannot grab frame from RTSP stream.")
 
-            print("RTSP client: Enqueued next frame")
+            logger.info("RTSP client: Enqueued next frame")
             self.output_buffer.put(frame)
