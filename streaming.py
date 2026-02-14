@@ -94,10 +94,11 @@ class RTSPStreamer(PipelineComponent):
     def component_function(self):
         if not self.capture.isOpened():
             logger.error("Error: Cannot open the RTSP stream.")
-            exit()
+            return
 
         ret, frame = self.capture.read()
         if not ret:
             logger.error("Error: Cannot grab frame from RTSP stream.")
+            return
 
         self.output_buffer.put(frame)
