@@ -2,9 +2,21 @@ from flask import Flask, render_template, Response
 from camera_manager import CameraManager
 from streaming import Pipeline, RTSPStreamer, FrameEncoder
 import logging
+from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='server.log', encoding='utf-8', level=logging.DEBUG)
+handler = RotatingFileHandler(
+    filename='server.log', 
+    encoding='utf-8', 
+    maxBytes=5*1024*1024
+)
+
+logging.basicConfig(
+    level=logging.DEBUG, 
+    format="%(asctime)s %(name)-25s %(levelname)-8s %(message)s",
+    datefmt="%y-%m-%d %H:%M:%S",
+    handlers=[handler]
+)
 
 app = Flask(__name__)
 
