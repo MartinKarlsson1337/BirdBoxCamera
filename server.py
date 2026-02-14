@@ -16,6 +16,9 @@ output_buffer = pipeline.get_final_output_buffer()
 
 def frame_getter():
     while True:
+        print("Frame getter: Waiting for next frame...")
+        output = output_buffer.get()
+        print("Frame getter: Got next frame. Yielding...")
         yield output_buffer.get()
 
 

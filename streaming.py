@@ -69,9 +69,11 @@ class FrameEncoder(PipelineComponent):
 
     def component_function(self):
         frame = self.input_buffer.get()
+        print("Encoder: Got next frame to encode")
         imgencode = cv2.imencode('.jpg', frame)[1]
         stringData = imgencode.tobytes()
         output = (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
+        print("Encoder: Finished encoding. Enqueueing frame")
         self.output_buffer.put(output)
 
 
@@ -79,7 +81,9 @@ class RTSPStreamer(PipelineComponent):
     def __init__(self, stream_url: str):
         super().__init__()
         self.rtsp_url = stream_url
+        print("RTSP client: Starting streaming")
         self.capture = cv2.VideoCapture(self.rtsp_url)
+        print("RTSP client: Stream started")
 
     def stop_running(self):
         self.capture.release()
@@ -94,4 +98,5 @@ class RTSPStreamer(PipelineComponent):
             if not ret:
                 print("Error: Cannot grab frame from RTSP stream.")
 
+            print("RTSP client: Enqueued next frame")
             self.output_buffer.put(frame)
