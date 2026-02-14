@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 handler = RotatingFileHandler(
     filename='server.log', 
     encoding='utf-8', 
-    maxBytes=5*1024*1024
+    maxBytes=1*1024*1024
 )
 
 logging.basicConfig(
