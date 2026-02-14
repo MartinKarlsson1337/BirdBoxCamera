@@ -77,7 +77,7 @@ class FrameEncoder(PipelineComponent):
 
 class RTSPStreamer(PipelineComponent):
     def __init__(self, stream_url: str):
-        super.__init__(self)
+        super.__init__()
         self.rtsp_url = stream_url
         self.capture = cv2.VideoCapture(self.rtsp_url)
 
