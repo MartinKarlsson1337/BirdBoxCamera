@@ -34,7 +34,7 @@ class PipelineComponent(threading.Thread, ABC):
 
 
 class Pipeline():
-    def __init__(self, components: List[PipelineComponent], default_buffer_size: int = 10):
+    def __init__(self, components: List[PipelineComponent], default_buffer_size: int = 2):
         self.components = components
         self.default_buffer_size = default_buffer_size
         self.buffers = []
