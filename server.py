@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 camera_manager = CameraManager()
 stream_uri = camera_manager.get_stream()
+print("STREAM URI: ", stream_uri)
 pipeline = Pipeline([
     RTSPStreamer(stream_uri),
     FrameEncoder()
