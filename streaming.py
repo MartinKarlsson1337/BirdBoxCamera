@@ -28,8 +28,9 @@ class PipelineComponent(threading.Thread, ABC):
         raise Exception("component_function has not been implemented")
 
     def run(self):
-        while self.should_stop:
+        while not self.should_stop:
             self.component_function()
+        logger.info(f"{self.__class__} shut down...")
 
 
 class Pipeline():
@@ -72,11 +73,9 @@ class FrameEncoder(PipelineComponent):
 
     def component_function(self):
         frame = self.input_buffer.get()
-        logger.info("Encoder: Got next frame to encode")
         imgencode = cv2.imencode('.jpg', frame)[1]
         stringData = imgencode.tobytes()
         output = (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
-        logger.info("Encoder: Finished encoding. Enqueueing frame")
         self.output_buffer.put(output)
 
 
@@ -94,12 +93,11 @@ class RTSPStreamer(PipelineComponent):
 
     def component_function(self):
         if not self.capture.isOpened():
-            logger.info("Error: Cannot open the RTSP stream.")
+            logger.error("Error: Cannot open the RTSP stream.")
             exit()
 
-            ret, frame = capture.read()
-            if not ret:
-                logger.info("Error: Cannot grab frame from RTSP stream.")
+        ret, frame = self.capture.read()
+        if not ret:
+            logger.error("Error: Cannot grab frame from RTSP stream.")
 
-            logger.info("RTSP client: Enqueued next frame")
-            self.output_buffer.put(frame)
+        self.output_buffer.put(frame)
