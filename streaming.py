@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 
 class PipelineComponent(threading.Thread, ABC):
     def __init__(self):
-        super.__init__(self)
+        super().__init__(self)
         self.input_buffer = None
         self.output_buffer = None
         self.should_stop = False
@@ -65,7 +65,7 @@ class Pipeline():
 
 class FrameEncoder(PipelineComponent):
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
     def component_function(self):
         frame = self.input_buffer.get()
@@ -77,7 +77,7 @@ class FrameEncoder(PipelineComponent):
 
 class RTSPStreamer(PipelineComponent):
     def __init__(self, stream_url: str):
-        super.__init__()
+        super().__init__()
         self.rtsp_url = stream_url
         self.capture = cv2.VideoCapture(self.rtsp_url)
 
