@@ -5,10 +5,10 @@ from typing import List
 from abc import ABC, abstractmethod
 
 class PipelineComponent(threading.Thread, ABC):
-    def __init__(self, input_buffer: queue.Queue, output_buffer: queue.Queue):
+    def __init__(self):
         super.__init__(self)
-        self.input_buffer = input_buffer
-        self.output_buffer = output_buffer
+        self.input_buffer = None
+        self.output_buffer = None
         self.should_stop = False
 
     def stop_running(self):
@@ -77,7 +77,7 @@ class FrameEncoder(PipelineComponent):
 
 class RTSPStreamer(PipelineComponent):
     def __init__(self, stream_url: str):
-        super.__init__()
+        super.__init__(self)
         self.rtsp_url = stream_url
         self.capture = cv2.VideoCapture(self.rtsp_url)
 
